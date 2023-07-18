@@ -1,0 +1,52 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.8'
+services:
+  khepri-nginx:
+    container_name: khepri-nginx
+    image: nginx:mainline-alpine
+    working_dir: /application
+    volumes:
+      - ../app:/application
+      - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      docker: 'true'
+    ports:
+      - '8000:80'
+    expose:
+      - '80'
+    networks:
+      - traefik_default
+    restart: always
+
+  khepri-phpfpm:
+    image: wyzenrepo/php-fpm81:latest
+    container_name: khepri-phpfpm
+    working_dir: /application
+    environment:
+      docker: 'true'
+    expose:
+      - '9000'
+    volumes:
+      - ../app:/application
+      - ./phpdocker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+    networks:
+      - traefik_default
+    restart: always
+
+  khepri-cron:
+    image: wyzenrepo/docker-cron:latest
+    container_name: total-khepri-cron
+    depends_on:
+      - khepri-phpfpm
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      # Map containers from host
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../crontabs:/crondir
+      - ../app/var/logs/cron:/var/log/cron
+networks:
+  traefik_default:
+    external: true
