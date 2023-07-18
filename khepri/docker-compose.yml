@@ -31,6 +31,7 @@ services:
     volumes:
       - ~/var/www/khepri/backend/app:/application
       - ./phpdocker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+      - /mnt/khepri:/mnt/TOTAL-FILER/khepri
     networks:
       - traefik_default
     restart: always
