@@ -1,0 +1,49 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.8"
+services:
+    foncier-nginx:
+        container_name: foncier-nginx
+        image: nginx:alpine
+        working_dir: /application
+        volumes:
+            - ~/var/www/foncier/foncier-back/app:/application
+            - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        environment:
+            docker: "true"
+        expose:
+            - "80"
+        networks:
+            - traefik_default
+        restart: always
+
+    foncier-phpfpm:
+        image: wyzenrepo/php-fpm74:latest
+        container_name: foncier-phpfpm
+        working_dir: /application
+        environment:
+            docker: "true"
+        expose:
+            - "9000"
+        env_file:
+            - ./phpdocker/env_file
+        volumes:
+            - ~/var/www/foncier/foncier-back/app:/application
+            - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+            - /mnt/foncier:/mnt/TOTAL-FILER/khepri
+        networks:
+            - traefik_default
+        restart: always
+
+volumes:
+    epa-foncier-volume-app:
+        driver: local
+        driver_opts:
+            type: none
+            device: $PWD/../app
+            o: bind
+
+networks:
+    traefik_default:
+        external: true
