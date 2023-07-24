@@ -38,7 +38,7 @@ services:
 
   khepri-cron:
     image: wyzenrepo/docker-cron:latest
-    container_name: total-khepri-cron
+    container_name: khepri-cron
     depends_on:
       - khepri-phpfpm
     environment:
@@ -46,8 +46,8 @@ services:
     volumes:
       # Map containers from host
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ../crontabs:/crondir
-      - ../app/var/logs/cron:/var/log/cron
+      - ~/var/www/khepri/backend/crontabs:/crondir
+      - ~/var/www/khepri/backend/app/var/logs/cron:/var/log/cron
 networks:
   traefik_default:
     external: true

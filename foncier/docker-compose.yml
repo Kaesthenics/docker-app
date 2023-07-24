@@ -33,7 +33,7 @@ services:
         volumes:
             - ~/var/www/foncier/foncier-back/app:/application
             - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
-            - /mnt/foncier:/mnt/TOTAL-FILER/khepri
+            - ~/mnt/foncier:/mnt/TOTAL-FILER/foncier
         networks:
             - traefik_default
         restart: always
